@@ -87,7 +87,8 @@ new folder or log out/in to refresh it.
 ## Layout
 
 ```
-Sources/PrettyMarkdown/main.swift   App source (SwiftUI + WebKit)
+Sources/PrettyMarkdown/             App source (SwiftUI + WebKit), one type per file
+Sources/PrettyMarkdown/Resources/   Web assets (theme.css, highlight.js, scrollspy.js, Sample.md)
 Packaging/AppIcon.png               Source app-icon artwork (1024×1024)
 Packaging/Info.plist                Info.plist template for the bundle
 package.sh                          Build + assemble the signed .app

@@ -12,7 +12,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "PrettyMarkdown",
-            path: "Sources/PrettyMarkdown"
+            path: "Sources/PrettyMarkdown",
+            resources: [.process("Resources")]
         )
     ]
 )

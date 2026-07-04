@@ -21,6 +21,9 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 cp "$BIN" "$APP/Contents/MacOS/$APP_NAME"
+# SwiftPM resource bundle (theme.css, JS, Sample.md) — Bundle.module finds it
+# in Contents/Resources when running from the .app.
+cp -R "$(dirname "$BIN")/${APP_NAME}_${APP_NAME}.bundle" "$APP/Contents/Resources/"
 cp "$PKG/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 

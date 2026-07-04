@@ -5,7 +5,26 @@ Guidance for Claude Code when working in this repo.
 ## What this is
 
 `PrettyMarkdown` — a native macOS SwiftUI + WebKit Markdown viewer, shipped as a
-Swift Package. All app code is in `Sources/PrettyMarkdown/main.swift`.
+Swift Package. Swift sources live in `Sources/PrettyMarkdown/`, one type per
+file. The entry point is `PrettyMarkdownApp.swift` (`@main`).
+
+Key split: `MarkdownParser.swift` converts Markdown to body HTML (pure,
+testable), and `MarkdownHTMLRenderer.swift` wraps it in the page template.
+
+## Web assets are bundle resources
+
+The viewer's CSS/JS and the sample document are real files in
+`Sources/PrettyMarkdown/Resources/` (`theme.css`, `highlight.js`,
+`scrollspy.js`, `Sample.md`) — edit them there, not as Swift strings. They are
+declared as SwiftPM resources in `Package.swift` and loaded at runtime via
+`Bundle.module`. `package.sh` copies the generated
+`PrettyMarkdown_PrettyMarkdown.bundle` into the .app's `Contents/Resources`; if
+that copy is missing the app crashes at first render with a "Missing bundled
+resource" message.
+
+Theme notes: `theme.css` holds the light/dark palettes once. Forced appearance
+is applied by setting `data-theme="light|dark"` on `<html>`, and zoom by
+setting `--font-scale` inline on `<html>` (see `MarkdownHTMLRenderer.render`).
 
 ## Build & run
 
