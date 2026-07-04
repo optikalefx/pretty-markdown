@@ -1,0 +1,9 @@
+# Swift Package Manager
+.build/
+Package.resolved
+
+# Generated app bundle (produced by ./package.sh)
+outputs/
+
+# macOS
+.DS_Store
