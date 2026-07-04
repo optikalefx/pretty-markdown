@@ -5,6 +5,19 @@ book-like typography. Built with SwiftUI and rendered through WebKit, it package
 its own lightweight Markdown parser and stylesheet — no external Markdown engine,
 no editing, just a fast, focused reading experience.
 
+Repository: <https://github.com/optikalefx/pretty-markdown>
+
+## Download
+
+Grab the latest signed `.app` from the
+[Releases page](https://github.com/optikalefx/pretty-markdown/releases/latest):
+download `PrettyMarkdown-*.zip`, unzip it, and move `PrettyMarkdown.app` to your
+Applications folder.
+
+The app is ad-hoc signed (not notarized), so on first launch right-click it and
+choose **Open**, then confirm. Prefer to build it yourself? See
+[Building & packaging](#building--packaging).
+
 ## Features
 
 - **Open files any way you like** — the toolbar button, **⌘O**, the **Open
