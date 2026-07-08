@@ -34,6 +34,7 @@ enum MarkdownHTMLRenderer {
           <div class="\(layoutClass)">
             \(tocHTML(from: rendered.headings))
             <main class="document">
+              \(frontMatterHTML(from: rendered.frontMatter))
               \(rendered.body)
             </main>
           </div>
@@ -41,6 +42,35 @@ enum MarkdownHTMLRenderer {
           <script>\(highlightScript)</script>
         </body>
         </html>
+        """
+    }
+
+    private static func frontMatterHTML(from fields: [FrontMatterField]) -> String {
+        guard !fields.isEmpty else { return "" }
+        let rows = fields.map { field -> String in
+            let valueHTML: String
+            let wide: Bool
+            switch field.value {
+            case .scalar(let text):
+                wide = text.count > 72 || text.contains("\n")
+                valueHTML = text.isEmpty ? "<span class=\"front-matter-empty\">—</span>" : text.htmlEscaped
+            case .list(let items):
+                wide = items.reduce(0) { $0 + $1.count } > 60
+                valueHTML = items.map { "<span class=\"front-matter-chip\">\($0.htmlEscaped)</span>" }.joined()
+            }
+            let cls = wide ? " front-matter-field-wide" : ""
+            return """
+            <div class="front-matter-field\(cls)"><dt>\(field.key.htmlEscaped)</dt><dd>\(valueHTML)</dd></div>
+            """
+        }.joined(separator: "\n")
+
+        return """
+        <header class="front-matter" aria-label="Document metadata">
+          <div class="front-matter-title">Front matter</div>
+          <dl class="front-matter-grid">
+            \(rows)
+          </dl>
+        </header>
         """
     }
 

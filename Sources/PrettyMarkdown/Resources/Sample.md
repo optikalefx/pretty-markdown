@@ -1,3 +1,15 @@
+---
+title: Pretty Markdown
+author: Pretty Markdown Team
+description: >-
+  A quick tour of the viewer. YAML front matter like this block is shown as a
+  metadata card above the document instead of leaking into the text.
+tags:
+  - markdown
+  - macos
+  - viewer
+---
+
 # Pretty Markdown
 
 Pretty Markdown is a focused macOS Markdown viewer for reading local `.md` files with clean typography, automatic refresh, and a generated table of contents.

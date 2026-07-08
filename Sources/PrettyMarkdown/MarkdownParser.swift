@@ -9,13 +9,24 @@ struct Heading {
 struct RenderedContent {
     let body: String
     let headings: [Heading]
+    let frontMatter: [FrontMatterField]
 }
 
 /// Converts Markdown source into body HTML plus the headings needed for the
 /// table of contents. Pure text-in/text-out — no WebKit or page chrome here.
 enum MarkdownParser {
     static func parse(_ markdown: String) -> RenderedContent {
-        let lines = markdown.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n")
+        let frontMatter: [FrontMatterField]
+        let source: String
+        if let split = FrontMatterParser.split(markdown) {
+            frontMatter = split.fields
+            source = split.body
+        } else {
+            frontMatter = []
+            source = markdown
+        }
+
+        let lines = source.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n")
         var html: [String] = []
         var headings: [Heading] = []
         var usedSlugs: [String: Int] = [:]
@@ -189,7 +200,7 @@ enum MarkdownParser {
             html.append("<pre><code>\(codeLines.joined(separator: "\n").htmlEscaped)</code></pre>")
         }
         flushFlow()
-        return RenderedContent(body: html.joined(separator: "\n"), headings: headings)
+        return RenderedContent(body: html.joined(separator: "\n"), headings: headings, frontMatter: frontMatter)
     }
 
     private static func inlineHTML(_ text: String) -> String {
