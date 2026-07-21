@@ -458,6 +458,100 @@ strong {
   font-weight: 720;
 }
 
+/* Images */
+.document img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 2em auto;
+  padding: .5rem;
+  background: color-mix(in srgb, var(--canvas) 50%, var(--paper));
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .14);
+}
+
+/* Linked images get a subtle hover affordance. */
+.document a > img {
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.document a:hover > img {
+  border-color: var(--accent);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .2);
+}
+
+/* Figures / image captions */
+.document figure {
+  margin: 2em 0;
+}
+
+.document figure img {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Sized images via #small / #medium / #large in the alt text. Applied to a
+   bare <img> or to the wrapping <figure>. */
+.document img.img-small,
+.document figure.img-small { width: 280px; max-width: 100%; }
+.document img.img-medium,
+.document figure.img-medium { width: 440px; max-width: 100%; }
+.document img.img-large,
+.document figure.img-large { width: 640px; max-width: 100%; }
+
+/* A sized figure's image fills the constrained figure width. */
+.document figure.img-small img,
+.document figure.img-medium img,
+.document figure.img-large img { width: 100%; }
+
+/* Floated images via #left / #right in the alt text so text wraps around
+   them. Each float clears its own side so consecutive floats stack. */
+.document img.img-left,
+.document figure.img-left {
+  float: left;
+  clear: left;
+  margin: .4em 2em 1em 0;
+}
+
+.document img.img-right,
+.document figure.img-right {
+  float: right;
+  clear: right;
+  margin: .4em 0 1em 2em;
+}
+
+/* A full-width (non-floated) image/figure drops below any preceding float
+   rather than overlapping it. */
+.document > p > img:not([class]),
+.document > img:not([class]),
+.document > figure:not([class]) {
+  clear: both;
+}
+
+.document figcaption {
+  margin-top: .75rem;
+  text-align: center;
+  font-size: .9rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Narrow screens: no room for text to wrap alongside a float, so stack. */
+@media (max-width: 640px) {
+  .document img.img-left,
+  .document figure.img-left,
+  .document img.img-right,
+  .document figure.img-right {
+    float: none;
+    clear: both;
+    width: 100%;
+    margin: 2em auto;
+  }
+}
+
 @media (max-width: 980px) {
   .reading-layout {
     width: calc(100vw - 32px);
