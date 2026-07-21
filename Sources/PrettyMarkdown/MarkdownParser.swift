@@ -206,7 +206,48 @@ enum MarkdownParser {
             html.append("<pre><code>\(codeLines.joined(separator: "\n").htmlEscaped)</code></pre>")
         }
         flushFlow()
-        return RenderedContent(body: html.joined(separator: "\n"), headings: headings, frontMatter: frontMatter)
+        let grouped = groupMediaRows(html)
+        return RenderedContent(body: grouped.joined(separator: "\n"), headings: headings, frontMatter: frontMatter)
+    }
+
+    /// A side image (`#left` / `#right`) is paired with the block that follows
+    /// it into a flex "media row", so its text sits beside it without floating.
+    /// Only a single run of flowing prose (`<p>` / `<ul>` / `<ol>`) is pulled
+    /// alongside; anything else — a quote, heading, table, or another image —
+    /// stays a full-width block below the row. This replaces CSS floats, which
+    /// squeezed adjacent content and forced later blocks to clear manually.
+    private static func groupMediaRows(_ blocks: [String]) -> [String] {
+        var result: [String] = []
+        var i = 0
+        while i < blocks.count {
+            let block = blocks[i]
+            if let side = sideImageSide(of: block),
+               i + 1 < blocks.count,
+               isProseBlock(blocks[i + 1]) {
+                result.append("""
+                <div class="media-row media-row--\(side)">\(block)<div class="media-body">\(blocks[i + 1])</div></div>
+                """)
+                i += 2
+                continue
+            }
+            result.append(block)
+            i += 1
+        }
+        return result
+    }
+
+    /// Returns "left" / "right" if the block is a lone image or figure carrying
+    /// the matching float hint class, otherwise nil.
+    private static func sideImageSide(of block: String) -> String? {
+        guard block.hasPrefix("<img") || block.hasPrefix("<figure") else { return nil }
+        if block.contains("img-left") { return "left" }
+        if block.contains("img-right") { return "right" }
+        return nil
+    }
+
+    /// Flowing text blocks that may sit beside a side image.
+    private static func isProseBlock(_ block: String) -> Bool {
+        block.hasPrefix("<p>") || block.hasPrefix("<ul>") || block.hasPrefix("<ol>")
     }
 
     private static func inlineHTML(_ text: String) -> String {

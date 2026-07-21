@@ -506,28 +506,50 @@ strong {
 .document figure.img-medium img,
 .document figure.img-large img { width: 100%; }
 
-/* Floated images via #left / #right in the alt text so text wraps around
-   them. Each float clears its own side so consecutive floats stack. */
+/* Side images via #left / #right sit beside the following block instead of
+   floating: the parser wraps the pair in a .media-row flex container. Floats
+   were dropped because they squeezed adjacent text (especially a left + right
+   pair) and let later blocks like blockquotes overlap unless every block type
+   manually cleared. A lone side image with no prose to pair with just aligns
+   to its side. */
 .document img.img-left,
-.document figure.img-left {
-  float: left;
-  clear: left;
-  margin: .4em 2em 1em 0;
-}
-
+.document img.img-right { display: block; }
+.document img.img-left,
+.document figure.img-left { margin-right: auto; }
 .document img.img-right,
-.document figure.img-right {
-  float: right;
-  clear: right;
-  margin: .4em 0 1em 2em;
+.document figure.img-right { margin-left: auto; }
+
+.document .media-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2em;
+  margin: 1.2em 0;
 }
 
-/* A full-width (non-floated) image/figure drops below any preceding float
-   rather than overlapping it. */
-.document > p > img:not([class]),
-.document > img:not([class]),
-.document > figure:not([class]) {
-  clear: both;
+.document .media-row--right { flex-direction: row-reverse; }
+
+/* Inside a row the image is a fixed-width column (from #small/#medium/#large)
+   and the body takes the rest; the flex gap replaces the float margins. */
+.document .media-row > img,
+.document .media-row > figure {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.document .media-body { flex: 1 1 0; min-width: 0; }
+.document .media-body > :first-child { margin-top: 0; }
+.document .media-body > :last-child { margin-bottom: 0; }
+
+/* Narrow screens: no room beside the image, so stack it above its text. */
+@media (max-width: 640px) {
+  .document .media-row,
+  .document .media-row--right { flex-direction: column; }
+  .document .media-row > img,
+  .document .media-row > figure {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .document .media-body { width: 100%; }
 }
 
 .document figcaption {
@@ -537,19 +559,6 @@ strong {
   font-style: italic;
   line-height: 1.5;
   color: var(--muted);
-}
-
-/* Narrow screens: no room for text to wrap alongside a float, so stack. */
-@media (max-width: 640px) {
-  .document img.img-left,
-  .document figure.img-left,
-  .document img.img-right,
-  .document figure.img-right {
-    float: none;
-    clear: both;
-    width: 100%;
-    margin: 2em auto;
-  }
 }
 
 @media (max-width: 980px) {
